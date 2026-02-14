@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ - Pertanyaan Umum | Baeci Store Premium Service</title>
+    <meta name="description" content="Pertanyaan yang sering diajukan mengenai layanan topup, rekber, dan jasa digital di Baeci Store. Temukan jawaban lengkap di sini.">
+    <meta name="keywords" content="faq baeci store, bantuan topup, rekber aman, jasa digital indonesia">
+    <link rel="icon" href="https://h.top4top.io/p_3697th1nd3.png" type="image/png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        .faq-item { transition: all 0.3s ease; }
+        .faq-answer { display: none; animation: slideDown 0.3s ease-out; }
+        .faq-item.active .faq-answer { display: block; }
+        .faq-item.active .faq-icon { transform: rotate(180deg); }
+    </style>
+</head>
+<body class="bg-black text-white min-h-screen font-sans selection:bg-blue-500/30">
+    <div class="max-w-3xl mx-auto px-6 py-12">
+        <header class="mb-10 flex items-center justify-between">
+            <a href="index.html" class="flex items-center text-blue-500 hover:text-blue-400 transition-colors group">
+                <i class="fas fa-chevron-left mr-2 group-hover:-translate-x-1 transition-transform"></i>
+                <span class="font-medium">Kembali ke Beranda</span>
+            </a>
+            <div class="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center border border-blue-500/20">
+                <i class="fas fa-question-circle text-blue-500"></i>
+            </div>
+        </header>
+
+        <h1 class="text-4xl font-extrabold mb-4 bg-gradient-to-r from-white to-gray-500 bg-clip-text text-transparent">FAQ</h1>
+        <p class="text-gray-400 mb-12 leading-relaxed">Punya pertanyaan seputar layanan kami? Berikut adalah beberapa jawaban untuk pertanyaan yang paling sering diajukan oleh pelanggan kami.</p>
+
+        <div class="space-y-4">
+            <!-- FAQ 1 -->
+            <div class="faq-item group border border-white/10 rounded-2xl bg-white/[0.02] hover:bg-white/[0.05] overflow-hidden">
+                <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-6 text-left focus:outline-none">
+                    <span class="font-semibold text-lg text-gray-200 group-hover:text-white transition-colors">Berapa lama proses transaksi di Baeci Store?</span>
+                    <i class="fas fa-chevron-down faq-icon text-blue-500 transition-transform duration-300"></i>
+                </button>
+                <div class="faq-answer px-6 pb-6 text-gray-400 leading-relaxed border-t border-white/5 pt-4">
+                    Proses transaksi seperti Top Up atau Jasa Digital biasanya memakan waktu <span class="text-blue-400 font-medium">1-10 menit</span> setelah pembayaran diverifikasi secara otomatis oleh sistem kami. Untuk layanan manual seperti Rekber, estimasi waktu bergantung pada respons kedua belah pihak, namun tim admin kami siap memproses secepat mungkin.
+                </div>
+            </div>
+
+            <!-- FAQ 2 -->
+            <div class="faq-item group border border-white/10 rounded-2xl bg-white/[0.02] hover:bg-white/[0.05] overflow-hidden">
+                <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-6 text-left focus:outline-none">
+                    <span class="font-semibold text-lg text-gray-200 group-hover:text-white transition-colors">Apakah layanan Rekber di sini aman dan terpercaya?</span>
+                    <i class="fas fa-chevron-down faq-icon text-blue-500 transition-transform duration-300"></i>
+                </button>
+                <div class="faq-answer px-6 pb-6 text-gray-400 leading-relaxed border-t border-white/5 pt-4">
+                    Tentu saja. <span class="text-blue-400 font-medium">Baeci Store</span> telah menangani ribuan transaksi dengan track record yang bersih. Kami menjamin keamanan dana Anda selama proses transaksi berlangsung. Rekber kami menggunakan sistem penahanan dana yang ketat hingga barang/jasa diterima dengan baik oleh pembeli.
+                </div>
+            </div>
+
+            <!-- FAQ 3 -->
+            <div class="faq-item group border border-white/10 rounded-2xl bg-white/[0.02] hover:bg-white/[0.05] overflow-hidden">
+                <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-6 text-left focus:outline-none">
+                    <span class="font-semibold text-lg text-gray-200 group-hover:text-white transition-colors">Metode pembayaran apa saja yang didukung?</span>
+                    <i class="fas fa-chevron-down faq-icon text-blue-500 transition-transform duration-300"></i>
+                </button>
+                <div class="faq-answer px-6 pb-6 text-gray-400 leading-relaxed border-t border-white/5 pt-4">
+                    Kami mendukung berbagai metode pembayaran populer di Indonesia untuk memudahkan Anda, termasuk:
+                    <ul class="list-disc ml-5 mt-3 space-y-1">
+                        <li>E-Wallet (DANA, OVO, GoPay, ShopeePay)</li>
+                        <li>QRIS (Bisa scan dari aplikasi bank/ewallet apa saja)</li>
+                        <li>Transfer Bank (BCA, Mandiri, BNI, BRI)</li>
+                        <li>Retail (Alfamart & Indomaret)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- FAQ 4 -->
+            <div class="faq-item group border border-white/10 rounded-2xl bg-white/[0.02] hover:bg-white/[0.05] overflow-hidden">
+                <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-6 text-left focus:outline-none">
+                    <span class="font-semibold text-lg text-gray-200 group-hover:text-white transition-colors">Bagaimana jika saya mengalami kendala saat order?</span>
+                    <i class="fas fa-chevron-down faq-icon text-blue-500 transition-transform duration-300"></i>
+                </button>
+                <div class="faq-answer px-6 pb-6 text-gray-400 leading-relaxed border-t border-white/5 pt-4">
+                    Jangan khawatir! Tim Customer Service kami tersedia 24/7. Anda bisa menghubungi kami melalui tombol WhatsApp yang ada di dashboard utama atau mengirimkan detail kendala melalui menu "Bantuan". Pastikan Anda menyertakan <span class="text-blue-400 font-medium">Nomor Invoice</span> atau bukti transaksi untuk mempercepat pengecekan.
+                </div>
+            </div>
+        </div>
+
+        <footer class="mt-20 pt-8 border-t border-white/5 text-center">
+            <p class="text-gray-500 text-sm">&copy; 2026 Baeci Store. Semua Hak Dilindungi. Solusi Digital Terpercaya Anda.</p>
+        </footer>
+    </div>
+
+    <script>
+        function toggleFaq(button) {
+            const item = button.parentElement;
+            const isActive = item.classList.contains('active');
+            
+            // Close all others
+            document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('active'));
+            
+            // Toggle current
+            if (!isActive) {
+                item.classList.add('active');
+            }
+        }
+    </script>
+</body>
+</html>

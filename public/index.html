@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title id="tab-title">Baeci Store | Pusat Top Up & Rekber Terpercaya #1</title>
+    <meta name="description" content="Baeci Store menyediakan layanan Top Up Game, Rekber, dan Jasa Digital premium dengan proses instan 24/7. Amanah, murah, dan terpercaya.">
+    <meta name="keywords" content="baeci store, topup game murah, rekber amanah, jasa digital, biolink premium">
+    <link rel="icon" href="https://h.top4top.io/p_3697th1nd3.png" type="image/png">
+    
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: { iosDark: 'rgba(28, 28, 30, 0.6)', iosBlue: '#0A84FF' },
+                    animation: { 
+                        'fade-in': 'fadeIn 0.3s ease-out forwards',
+                        'slide-up': 'slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { background-color: #000; color: white; font-family: 'Inter', sans-serif; min-height: 100vh; -webkit-tap-highlight-color: transparent; }
+        .bg-wallpaper {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2;
+            background-size: cover; background-position: center; transition: background-image 0.5s ease;
+            background-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop');
+        }
+        .bg-overlay { position: fixed; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.9)); z-index: -1; backdrop-filter: blur(8px); }
+        .ios-widget {
+            background: rgba(30, 30, 30, 0.65); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.12); box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+        }
+        .ios-active:active { transform: scale(0.96); opacity: 0.9; }
+        .profile-img { animation: float 6s ease-in-out infinite; box-shadow: 0 0 0 4px rgba(255,255,255,0.1); }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(40px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        @keyframes modalOverlay { from { opacity: 0; } to { opacity: 1; } }
+
+        .view-section { display: none; animation: fadeIn 0.4s ease-out; }
+        .nav-icon.active { color: #0A84FF; }
+        .hide-scroll::-webkit-scrollbar { display: none; }
+        
+        .custom-modal { position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(8px); animation: modalOverlay 0.3s ease; }
+        .custom-modal.active { display: flex; }
+        .custom-modal-content { animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); max-height: 85vh; width: 100%; max-width: 400px; overflow-y: auto; scrollbar-width: none; }
+        .custom-modal-content::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="flex justify-center items-start pt-8 pb-24 overflow-x-hidden">
+
+    <!-- Loading Screen -->
+    <div id="loader" class="fixed inset-0 flex flex-col justify-center items-center bg-black z-[9999] transition-opacity duration-500">
+        <div class="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500 mb-4"></div>
+        <p class="text-xs text-gray-500 font-bold tracking-[0.3em]">BAECI STORE</p>
+    </div>
+
+    <div class="bg-wallpaper" id="bg-layer"></div>
+    <div class="bg-overlay"></div>
+
+    <main class="w-full max-w-[420px] px-5 z-10 relative">
+        
+        <!-- HEADER -->
+        <header class="flex flex-col items-center text-center mb-6 pt-4">
+            <div class="relative mb-3">
+                <img id="profile-pic" src="https://h.top4top.io/p_3697th1nd3.png" alt="Profile" 
+                     class="w-24 h-24 rounded-full object-cover profile-img border-2 border-white/20">
+                <div class="absolute bottom-0 right-0 w-6 h-6 bg-black rounded-full flex items-center justify-center border border-white/20">
+                    <i class="fas fa-check-circle text-blue-500 text-sm"></i>
+                </div>
+            </div>
+            
+            <h1 class="text-xl font-bold text-white flex items-center gap-2">
+                <span id="site-name">Baeci Store</span>
+                <span class="bg-blue-500/20 text-blue-400 text-[9px] px-1.5 py-0.5 rounded-md border border-blue-500/30 font-bold">OFFICIAL</span>
+            </h1>
+            <p id="site-desc" class="text-gray-400 text-xs mt-1 font-medium tracking-wide">Rekber • Japost • Topup</p>
+        </header>
+
+        <!-- === VIEW 1: HOME === -->
+        <div id="view-home" class="view-section" style="display: block;">
+            <div class="ios-widget p-6 rounded-3xl text-center mb-4">
+                <h2 class="text-2xl font-bold mb-1">Selamat Datang</h2>
+                <p class="text-gray-400 text-sm mb-4">Pusat layanan digital terpercaya #1</p>
+                <div class="flex justify-center gap-4 text-center">
+                    <div><span class="block font-bold text-lg">5K+</span><span class="text-[10px] text-gray-500 uppercase">Transaksi</span></div>
+                    <div><span class="block font-bold text-lg">24/7</span><span class="text-[10px] text-gray-500 uppercase">Layanan</span></div>
+                    <div><span class="block font-bold text-lg">100%</span><span class="text-[10px] text-gray-500 uppercase">Amanah</span></div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 gap-4">
+                <a href="faq" class="ios-widget p-4 rounded-2xl flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-question-circle text-blue-400"></i>
+                        <span class="text-sm font-medium">FAQ / Pertanyaan</span>
+                    </div>
+                    <i class="fas fa-chevron-right text-gray-600 text-xs"></i>
+                </a>
+                <a href="privacy" class="ios-widget p-4 rounded-2xl flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-user-shield text-green-400"></i>
+                        <span class="text-sm font-medium">Kebijakan Privasi</span>
+                    </div>
+                    <i class="fas fa-chevron-right text-gray-600 text-xs"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- === VIEW 2: LINKS & PAYMENT === -->
+        <div id="view-links" class="view-section">
+            <h2 class="text-lg font-bold mb-4 pl-1">Kontak & Pembayaran</h2>
+            
+            <div id="dynamic-links-container" class="space-y-4 mb-4">
+                <!-- Dynamic links will be loaded here -->
+            </div>
+
+            <button onclick="openPaymentModal()" class="ios-widget ios-active p-4 rounded-3xl flex items-center gap-4 relative overflow-hidden text-left w-full mb-4">
+                <div class="absolute right-0 top-0 h-full w-1/2 bg-gradient-to-l from-yellow-500/10 to-transparent"></div>
+                <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center"><i class="fas fa-wallet text-yellow-400"></i></div>
+                <div>
+                    <h3 class="font-bold text-sm">Metode Pembayaran</h3>
+                    <p class="text-[10px] text-gray-400">Klik untuk melihat Rekening & QRIS</p>
+                </div>
+                <i class="fas fa-chevron-right text-gray-500 ml-auto"></i>
+            </button>
+        </div>
+
+        <!-- === VIEW 3: SHOP === -->
+        <div id="view-shop" class="view-section">
+            <h2 class="text-lg font-bold mb-4 pl-1">Katalog Layanan</h2>
+            <div id="shop-container" class="grid grid-cols-2 gap-3 pb-4">
+                <!-- Products will be loaded here -->
+            </div>
+        </div>
+
+        <!-- === VIEW 4: SOCIAL (Komunitas) === -->
+        <div id="view-social" class="view-section">
+            <h2 class="text-lg font-bold mb-4 pl-1">Komunitas</h2>
+            
+            <!-- Create Post -->
+            <div class="ios-widget p-4 rounded-2xl mb-6">
+                <div class="flex gap-3 mb-3">
+                    <img id="user-avatar-post" src="https://h.top4top.io/p_3697th1nd3.png" class="w-8 h-8 rounded-full object-cover">
+                    <textarea id="postInput" placeholder="Tulis sesuatu..." class="w-full bg-transparent text-sm text-white resize-none outline-none h-12"></textarea>
+                </div>
+                <input type="text" id="postImageInput" placeholder="Tempel URL Gambar (https://...)" class="w-full bg-black/20 text-xs text-white p-2 rounded-lg mb-3 hidden border border-white/10">
+                
+                <div class="flex justify-between items-center border-t border-white/10 pt-3">
+                    <button onclick="toggleImageInput()" class="text-blue-400 text-xs flex items-center gap-1 hover:text-white transition"><i class="fas fa-image"></i> Tambah Foto</button>
+                    <button onclick="addPost()" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold px-4 py-1.5 rounded-full transition ios-active">Posting</button>
+                </div>
+            </div>
+
+            <div id="feed-container" class="space-y-4 pb-8"></div>
+        </div>
+
+        <!-- === BOTTOM NAV === -->
+        <div class="fixed bottom-6 left-1/2 transform -translate-x-1/2 w-[90%] max-w-[400px] h-16 bg-[#161618]/90 backdrop-blur-xl rounded-full border border-white/10 flex justify-around items-center px-2 shadow-2xl z-50">
+            <button onclick="switchView('home')" class="nav-icon active p-3 w-1/4 text-center"><i class="fas fa-home text-xl"></i></button>
+            <button onclick="switchView('links')" class="nav-icon p-3 w-1/4 text-center"><i class="fas fa-comment-dots text-xl"></i></button>
+            <button onclick="switchView('shop')" class="nav-icon p-3 w-1/4 text-center"><i class="fas fa-shopping-bag text-xl"></i></button>
+            <button onclick="switchView('social')" class="nav-icon p-3 w-1/4 text-center"><i class="fas fa-user-circle text-xl"></i></button>
+        </div>
+
+    </main>
+
+    <!-- PAYMENT MODAL -->
+    <div id="paymentModal" class="custom-modal">
+        <div class="custom-modal-content ios-widget rounded-[2.5rem] p-8 relative border-white/20">
+            <button onclick="closePaymentModal()" class="absolute top-6 right-6 text-gray-400 hover:text-white transition-colors">
+                <i class="fas fa-times-circle text-2xl"></i>
+            </button>
+            <h2 class="text-2xl font-extrabold mb-1 text-center text-white">Pembayaran</h2>
+            <p class="text-gray-400 text-xs text-center mb-6 italic">Pilih metode yang tersedia di bawah ini</p>
+            
+            <div id="payment-content" class="space-y-6">
+                 <div class="bg-white/5 p-3 rounded-3xl text-center border border-white/10 group">
+                    <img src="https://g.top4top.io/p_3697v31wa1.jpeg" class="w-full h-auto rounded-2xl shadow-xl transition-transform group-hover:scale-[1.02]">
+                    <p class="text-white text-xs font-bold mt-4 tracking-wider">SCAN QRIS BAECI STORE</p>
+                    <p class="text-yellow-500 text-[10px] font-medium mt-1 leading-relaxed px-4">*KHUSUS QRIS DI ATAS 100K + 2,5k BIAYA PENCAIRAN*</p>
+                </div>
+                
+                <div class="space-y-3">
+                    <div class="bg-blue-600/10 p-4 rounded-3xl flex items-center justify-between border border-blue-500/20 hover:bg-blue-600/20 transition-all cursor-pointer" onclick="copyToClipboard('087761601481')">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white text-sm font-black shadow-lg shadow-blue-900/40">DANA</div>
+                            <div>
+                                <p class="text-[9px] text-blue-400 uppercase font-bold tracking-widest mb-0.5">E-Wallet Multi</p>
+                                <p class="text-base font-black text-white tracking-wider">0877 6160 1481</p>
+                                <p class="text-[10px] text-gray-500 font-semibold">a.n Olvat A.R</p>
+                            </div>
+                        </div>
+                        <i class="fas fa-copy text-blue-400 text-sm opacity-50"></i>
+                    </div>
+
+                    <div class="bg-orange-600/10 p-4 rounded-3xl flex items-center justify-between border border-orange-500/20 hover:bg-orange-600/20 transition-all cursor-pointer" onclick="copyToClipboard('104787618564')">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-orange-600 rounded-2xl flex items-center justify-center text-white text-sm font-black shadow-lg shadow-orange-900/40">JAGO</div>
+                            <div>
+                                <p class="text-[9px] text-orange-400 uppercase font-bold tracking-widest mb-0.5">Bank Digital</p>
+                                <p class="text-base font-black text-white tracking-wider">1047 8761 8564</p>
+                                <p class="text-[10px] text-gray-500 font-semibold">a.n Olvat A.R</p>
+                            </div>
+                        </div>
+                        <i class="fas fa-copy text-orange-400 text-sm opacity-50"></i>
+                    </div>
+
+                    <div class="bg-green-600/10 p-4 rounded-3xl flex items-center justify-between border border-green-500/20 hover:bg-green-600/20 transition-all cursor-pointer" onclick="copyToClipboard('901905541737')">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-green-600 rounded-2xl flex items-center justify-center text-white text-sm font-black shadow-lg shadow-green-900/40">SEA</div>
+                            <div>
+                                <p class="text-[9px] text-green-400 uppercase font-bold tracking-widest mb-0.5">SeaBank ID</p>
+                                <p class="text-base font-black text-white tracking-wider">9019 0554 1737</p>
+                                <p class="text-[10px] text-gray-500 font-semibold">a.n Olvat A.R</p>
+                            </div>
+                        </div>
+                        <i class="fas fa-copy text-green-400 text-sm opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NOTIFICATION POPUP -->
+    <div id="customNotify" class="fixed top-6 left-1/2 -translate-x-1/2 z-[2000] pointer-events-none transform transition-all duration-500 opacity-0 -translate-y-4">
+        <div class="bg-white/10 backdrop-blur-2xl border border-white/20 px-6 py-3 rounded-full flex items-center gap-3 shadow-2xl">
+            <i class="fas fa-check-circle text-green-400"></i>
+            <span id="notifyMsg" class="text-sm font-bold text-white whitespace-nowrap">Berhasil disalin!</span>
+        </div>
+    </div>
+
+    <script>
+        // Custom Notification
+        function showNotification(msg, type = 'success') {
+            const notify = document.getElementById('customNotify');
+            const msgEl = document.getElementById('notifyMsg');
+            msgEl.innerText = msg;
+            
+            notify.classList.remove('opacity-0', '-translate-y-4');
+            notify.classList.add('opacity-1', 'translate-y-0');
+            
+            setTimeout(() => {
+                notify.classList.add('opacity-0', '-translate-y-4');
+                notify.classList.remove('opacity-1', 'translate-y-0');
+            }, 2500);
+        }
+
+        // Copy to Clipboard Overload
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showNotification('Berhasil disalin ke papan klip!');
+            }).catch(err => {
+                console.error('Copy failed', err);
+            });
+        }
+
+        // Tab Navigation
+        function switchView(viewId) {
+            document.querySelectorAll('.view-section').forEach(s => s.style.display = 'none');
+            document.querySelectorAll('.nav-icon').forEach(i => i.classList.remove('active'));
+            document.getElementById('view-' + viewId).style.display = 'block';
+            event.currentTarget.classList.add('active');
+        }
+
+        // Modal Controls
+        function openPaymentModal() {
+            document.getElementById('paymentModal').classList.add('active');
+        }
+        function closePaymentModal() {
+            document.getElementById('paymentModal').classList.remove('active');
+        }
+        window.onclick = function(event) {
+            const modal = document.getElementById('paymentModal');
+            if (event.target == modal) closePaymentModal();
+        }
+
+        // Global Config
+        async function loadConfig() {
+            try {
+                const res = await fetch('/api/config');
+                const config = await res.json();
+                if (config.siteName) {
+                    document.getElementById('site-name').innerText = config.siteName;
+                    document.getElementById('tab-title').innerText = config.siteName;
+                }
+                if (config.siteDesc) document.getElementById('site-desc').innerText = config.siteDesc;
+                if (config.profilePic) {
+                    document.getElementById('profile-pic').src = config.profilePic;
+                    document.getElementById('user-avatar-post').src = config.profilePic;
+                }
+                if (config.waLink) document.getElementById('wa-link').href = config.waLink;
+                if (config.bgImage) document.getElementById('bg-layer').style.backgroundImage = `url('${config.bgImage}')`;
+                if (config.qrisPic) {
+                    const qrisImg = document.querySelector('#payment-content img');
+                    if (qrisImg) qrisImg.src = config.qrisPic;
+                }
+                
+                // Load Dynamic Links
+                loadDynamicLinks();
+
+                // Load Products
+                loadProducts();
+            } catch (e) { console.error("Config load error", e); }
+        }
+
+        async function loadDynamicLinks() {
+            try {
+                const res = await fetch('/api/links');
+                const links = await res.json();
+                const container = document.getElementById('dynamic-links-container');
+                container.innerHTML = links.map(l => {
+                    const color = l.color || 'blue';
+                    const iconBg = l.color === 'purple' ? 'bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-600' : `bg-${color}-500`;
+                    const bgColor = `bg-${color}-600/20`;
+                    const borderColor = `border-${color}-500/30`;
+                    const textOpacityColor = `text-${color}-200`;
+
+                    return `
+                        <a href="${l.url}" target="_blank"
+                        class="ios-widget ios-active w-full p-4 rounded-3xl flex items-center justify-between bg-white/5 border-white/10 group shadow-lg shadow-black/20"
+                        style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1);">
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 ${iconBg} rounded-full flex items-center justify-center text-white shadow-lg"><i class="${l.icon || 'fas fa-link'} text-xl"></i></div>
+                                <div class="text-left">
+                                    <h3 class="font-bold text-base text-white">${l.title}</h3>
+                                    <p class="text-xs text-white/60 opacity-90">${l.desc}</p>
+                                </div>
+                            </div>
+                            <i class="fas fa-chevron-right text-white/30"></i>
+                        </a>
+                    `;
+                }).join('');
+            } catch (e) { console.error("Links load error", e); }
+        }
+
+        async function loadProducts() {
+            try {
+                const res = await fetch('/api/products');
+                const products = await res.json();
+                const container = document.getElementById('shop-container');
+                container.innerHTML = products.map(p => {
+                    let media = `<div class="aspect-square rounded-xl bg-white/5 flex items-center justify-center text-4xl text-blue-400"><i class="${p.icon || 'fas fa-box'}"></i></div>`;
+                    if (p.image) {
+                        media = `<img src="${p.image}" class="aspect-square w-full rounded-xl object-cover shadow-lg">`;
+                    }
+                    return `
+                        <div class="product-card ios-widget p-3 rounded-2xl flex flex-col gap-2 animate-fade-in">
+                            ${media}
+                            <div><h3 class="text-xs font-bold truncate">${p.name}</h3><p class="text-[10px] text-gray-400">${p.desc}</p></div>
+                            <button onclick="window.open(document.getElementById('wa-link')?.href || '#')" class="ios-active bg-white text-black text-[10px] font-bold py-2 rounded-lg text-center mt-1">Order</button>
+                        </div>
+                    `;
+                }).join('');
+            } catch (e) { console.error("Products load error", e); }
+        }
+
+        // Community Feed
+        async function loadPosts() {
+            try {
+                const res = await fetch('/api/posts');
+                if (!res.ok) throw new Error('Failed to fetch posts');
+                const posts = await res.json();
+                console.log('Loaded posts count:', posts.length);
+                const container = document.getElementById('feed-container');
+                if (!container) {
+                    console.error("Feed container not found");
+                    return;
+                }
+
+                const currentUserId = 'user_' + Math.random().toString(36).substr(2, 9);
+                
+                if (posts.length === 0) {
+                    container.innerHTML = '<div class="text-center py-10 text-gray-500 text-xs">Belum ada postingan. Jadilah yang pertama!</div>';
+                    return;
+                }
+
+                container.innerHTML = posts.map(p => {
+                    try {
+                        const likesCount = (p.likes || []).length;
+                        const commentsCount = (p.comments || []).length;
+                        const isLiked = (p.likes || []).includes(currentUserId);
+                        const shareUrl = `${window.location.origin}/share/sosial/${p._id}`;
+                        const postDate = p.date ? new Date(p.date).toLocaleString() : 'Baru saja';
+
+                        return `
+                            <div class="ios-widget p-4 rounded-2xl animate-fade-in mb-4">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <img src="${p.avatar || 'https://h.top4top.io/p_3697th1nd3.png'}" class="w-8 h-8 rounded-full object-cover">
+                                    <div>
+                                        <h4 class="text-xs font-bold">User</h4>
+                                        <p class="text-[9px] text-gray-500">${postDate}</p>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-gray-200 mb-3">${p.content || ''}</p>
+                                ${p.image ? `<div class="mb-3 overflow-hidden rounded-xl border border-white/10 shadow-md bg-white/5"><img src="${p.image}" class="w-full h-auto block" onerror="this.parentElement.style.display='none'"></div>` : ''}
+                                
+                                <div class="flex items-center gap-6 border-t border-white/5 pt-3">
+                                    <button onclick="likePost('${p._id}', this)" class="flex items-center gap-1.5 text-xs ${isLiked ? 'text-red-500' : 'text-gray-400'} hover:text-red-500 transition">
+                                        <i class="${isLiked ? 'fas' : 'far'} fa-heart"></i> <span>${likesCount}</span>
+                                    </button>
+                                    <button onclick="toggleComments('${p._id}')" class="flex items-center gap-1.5 text-xs text-gray-400 hover:text-blue-400 transition">
+                                        <i class="far fa-comment"></i> <span>${commentsCount}</span>
+                                    </button>
+                                    <button onclick="sharePost('${shareUrl}')" class="flex items-center gap-1.5 text-xs text-gray-400 hover:text-green-400 transition">
+                                        <i class="far fa-share-square"></i> <span>Share</span>
+                                    </button>
+                                </div>
+
+                                <div id="comments-${p._id}" class="hidden mt-4 space-y-3 border-t border-white/5 pt-3">
+                                    <div id="comment-list-${p._id}" class="max-h-40 overflow-y-auto space-y-2 mb-3">
+                                        ${(p.comments || []).map(c => `
+                                            <div class="bg-white/5 p-2 rounded-xl">
+                                                <p class="text-[10px] font-bold text-blue-400 mb-0.5">User</p>
+                                                <p class="text-[11px] text-gray-200">${c.text || ''}</p>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <input type="text" id="input-comment-${p._id}" placeholder="Tulis komentar..." class="flex-1 bg-black/30 text-[11px] p-2 rounded-full outline-none border border-white/10 focus:border-blue-500">
+                                        <button onclick="addComment('${p._id}')" class="bg-blue-600 text-white p-2 rounded-full w-8 h-8 flex items-center justify-center transition"><i class="fas fa-paper-plane text-[10px]"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    } catch (renderError) {
+                        console.error("Single post render error:", renderError, p);
+                        return '';
+                    }
+                }).join('');
+            } catch (e) { 
+                console.error("Posts loop error", e);
+                const container = document.getElementById('feed-container');
+                if (container) container.innerHTML = '<div class="text-center py-10 text-red-400 text-xs">Gagal memuat postingan. Terjadi kesalahan sistem.</div>';
+            }
+
+        }
+
+        // Initialize
+        window.onload = () => {
+            loadConfig();
+            loadPosts();
+            setTimeout(() => {
+                document.getElementById('loader').style.opacity = '0';
+                setTimeout(() => document.getElementById('loader').style.display = 'none', 500);
+            }, 1000);
+        };
+
+        async function likePost(id, btn) {
+            try {
+                const res = await fetch(`/api/posts/${id}/like`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId: 'current_user' }) // simplified
+                });
+                if (res.ok) loadPosts();
+            } catch (e) {}
+        }
+
+        async function addComment(postId) {
+            const input = document.getElementById(`input-comment-${postId}`);
+            const text = input.value;
+            if (!text) return;
+
+            try {
+                const res = await fetch(`/api/posts/${postId}/comment`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text, user: 'User' })
+                });
+                if (res.ok) {
+                    input.value = '';
+                    loadPosts();
+                }
+            } catch (e) {}
+        }
+
+        function toggleComments(id) {
+            const div = document.getElementById(`comments-${id}`);
+            div.classList.toggle('hidden');
+        }
+
+        function sharePost(url) {
+            if (navigator.share) {
+                navigator.share({ title: 'Baeci Store Community', url }).catch(() => copyToClipboard(url));
+            } else {
+                copyToClipboard(url);
+            }
+        }
+
+        async function addPost() {
+            const content = document.getElementById('postInput').value;
+            const image = document.getElementById('postImageInput').value;
+            if (!content) {
+                alert('Tulis sesuatu dulu sayang!');
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/posts', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        content, 
+                        image, 
+                        avatar: document.getElementById('profile-pic').src 
+                    })
+                });
+
+                if (res.ok) {
+                    document.getElementById('postInput').value = '';
+                    document.getElementById('postImageInput').value = '';
+                    document.getElementById('postImageInput').classList.add('hidden');
+                    loadPosts();
+                } else {
+                    const errText = await res.text();
+                    alert('Gagal posting: ' + errText);
+                }
+            } catch (e) {
+                console.error("Post error", e);
+                alert('Koneksi bermasalah, coba lagi ya!');
+            }
+        }
+
+        function toggleImageInput() {
+            const input = document.getElementById('postImageInput');
+            input.classList.toggle('hidden');
+        }
+
+        function openPaymentModal() { document.getElementById('paymentModal').style.display = 'flex'; }
+        function closePaymentModal() { document.getElementById('paymentModal').style.display = 'none'; }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Copied: ' + text);
+            });
+        }
+
+        window.onload = () => {
+            loadConfig();
+            loadPosts();
+            setTimeout(() => {
+                document.getElementById('loader').style.opacity = '0';
+                setTimeout(() => document.getElementById('loader').style.display = 'none', 500);
+            }, 1000);
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Baeci Store</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .ios-widget {
+            background: rgba(30, 30, 30, 0.65); backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+    </style>
+</head>
+<body class="bg-[#000] text-white p-4 sm:p-8 min-h-screen">
+    <div class="max-w-4xl mx-auto">
+        <header class="flex justify-between items-center mb-8">
+            <h1 class="text-2xl font-bold flex items-center gap-2">
+                <i class="fas fa-cog text-blue-500"></i> Admin Panel
+            </h1>
+            <a href="/" class="text-sm text-gray-400 hover:text-white transition">Lihat Situs →</a>
+        </header>
+        
+        <!-- Login Section -->
+        <div id="login-section" class="ios-widget p-8 rounded-3xl max-w-md mx-auto mt-20 text-center">
+            <div class="w-16 h-16 bg-blue-600/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class="fas fa-lock text-blue-500 text-2xl"></i>
+            </div>
+            <h2 class="text-xl font-bold mb-6">Authentication</h2>
+            <input type="password" id="admin-pw" placeholder="Admin Password" class="bg-black/40 border border-white/10 p-4 rounded-2xl w-full mb-4 outline-none focus:border-blue-500 transition">
+            <button onclick="login()" class="bg-blue-600 hover:bg-blue-500 w-full py-4 rounded-2xl font-bold transition">Masuk</button>
+        </div>
+
+        <!-- Admin Dashboard Content -->
+        <div id="admin-content" class="hidden space-y-8 animate-fade-in">
+            <!-- Site Config -->
+            <section class="ios-widget p-6 rounded-3xl">
+                <h2 class="text-lg font-bold mb-6 flex items-center gap-2">
+                    <i class="fas fa-sliders-h text-blue-400"></i> Konfigurasi Utama
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs text-gray-500 font-bold mb-1 uppercase tracking-wider">Nama Situs</label>
+                            <input type="text" id="conf-name" class="bg-black/40 border border-white/10 p-3 rounded-xl w-full outline-none focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-500 font-bold mb-1 uppercase tracking-wider">Deskripsi/Bio</label>
+                            <input type="text" id="conf-desc" class="bg-black/40 border border-white/10 p-3 rounded-xl w-full outline-none focus:border-blue-500">
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs text-gray-500 font-bold mb-1 uppercase tracking-wider">URL Foto Profil</label>
+                            <input type="text" id="conf-pic" class="bg-black/40 border border-white/10 p-3 rounded-xl w-full outline-none focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-500 font-bold mb-1 uppercase tracking-wider">URL Background (Wallpaper)</label>
+                            <input type="text" id="conf-bg" class="bg-black/40 border border-white/10 p-3 rounded-xl w-full outline-none focus:border-blue-500" placeholder="https://...">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-500 font-bold mb-1 uppercase tracking-wider">WhatsApp Link</label>
+                            <input type="text" id="conf-wa" class="bg-black/40 border border-white/10 p-3 rounded-xl w-full outline-none focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-500 font-bold mb-1 uppercase tracking-wider">Instagram Link</label>
+                            <input type="text" id="conf-ig" class="bg-black/40 border border-white/10 p-3 rounded-xl w-full outline-none focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-500 font-bold mb-1 uppercase tracking-wider">URL Gambar QRIS</label>
+                            <input type="text" id="conf-qris" class="bg-black/40 border border-white/10 p-3 rounded-xl w-full outline-none focus:border-blue-500">
+                        </div>
+                    </div>
+                </div>
+                <button onclick="saveConfig()" class="mt-8 bg-green-600 hover:bg-green-500 px-8 py-3 rounded-2xl font-bold transition w-full md:w-auto">Simpan Konfigurasi</button>
+            </section>
+
+            <!-- Links Management -->
+            <section class="ios-widget p-6 rounded-3xl">
+                <h2 class="text-lg font-bold mb-6 flex items-center gap-2">
+                    <i class="fas fa-link text-blue-400"></i> Kelola Tombol Tautan
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 bg-white/5 p-4 rounded-2xl border border-white/5">
+                    <div class="space-y-3">
+                        <input type="text" id="link-title" placeholder="Judul Tautan (e.g. WhatsApp Admin)" class="bg-black/40 border border-white/10 p-3 rounded-xl w-full outline-none focus:border-blue-500">
+                        <input type="text" id="link-desc" placeholder="Deskripsi Singkat (e.g. Fast Response)" class="bg-black/40 border border-white/10 p-3 rounded-xl w-full outline-none focus:border-blue-500">
+                    </div>
+                    <div class="space-y-3">
+                        <input type="text" id="link-url" placeholder="URL Tautan (https://...)" class="bg-black/40 border border-white/10 p-3 rounded-xl w-full outline-none focus:border-blue-500">
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="text" id="link-icon" placeholder="Icon (e.g. fab fa-whatsapp)" class="bg-black/40 border border-white/10 p-3 rounded-xl w-full outline-none focus:border-blue-500">
+                            <input type="text" id="link-color" placeholder="Warna (e.g. green)" class="bg-black/40 border border-white/10 p-3 rounded-xl w-full outline-none focus:border-blue-500">
+                        </div>
+                        <button onclick="addLink()" class="bg-blue-600 hover:bg-blue-500 w-full py-3 rounded-xl font-bold transition">Tambah Tautan</button>
+                    </div>
+                </div>
+                <div id="admin-links" class="space-y-3">
+                    <!-- Links will be loaded here -->
+                </div>
+            </section>
+
+            <!-- Product/Catalog Management -->
+            <section class="ios-widget p-6 rounded-3xl">
+                <h2 class="text-lg font-bold mb-6 flex items-center gap-2">
+                    <i class="fas fa-shopping-bag text-orange-400"></i> Kelola Katalog Layanan
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 bg-white/5 p-4 rounded-2xl border border-white/5">
+                    <div class="space-y-3">
+                        <input type="text" id="prod-name" placeholder="Nama Layanan (e.g. Rekber)" class="bg-black/40 border border-white/10 p-3 rounded-xl w-full outline-none focus:border-orange-500">
+                        <input type="text" id="prod-desc" placeholder="Deskripsi Singkat" class="bg-black/40 border border-white/10 p-3 rounded-xl w-full outline-none focus:border-orange-500">
+                    </div>
+                    <div class="space-y-3">
+                        <input type="text" id="prod-image" placeholder="URL Foto Produk (https://...)" class="bg-black/40 border border-white/10 p-3 rounded-xl w-full outline-none focus:border-orange-500">
+                        <input type="text" id="prod-icon" placeholder="Atau Icon Class (e.g. fas fa-gem)" class="bg-black/40 border border-white/10 p-3 rounded-xl w-full outline-none focus:border-orange-500">
+                        <button onclick="addProduct()" class="bg-orange-600 hover:bg-orange-500 w-full py-3 rounded-xl font-bold transition">Tambah Produk</button>
+                    </div>
+                </div>
+
+                <div id="admin-catalog" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <!-- Products will be loaded here -->
+                </div>
+            </section>
+
+            <!-- Community Management -->
+            <section class="ios-widget p-6 rounded-3xl">
+                <h2 class="text-lg font-bold mb-6 flex items-center gap-2">
+                    <i class="fas fa-users text-purple-400"></i> Kelola Postingan Komunitas
+                </h2>
+                <div id="admin-feed" class="space-y-3">
+                    <!-- Posts will be loaded here -->
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        let adminPw = '';
+
+        function login() {
+            const pwInput = document.getElementById('admin-pw');
+            if (pwInput.value === 'AdminBaik268') {
+                adminPw = pwInput.value;
+                document.getElementById('login-section').classList.add('hidden');
+                document.getElementById('admin-content').classList.remove('hidden');
+                loadAdminData();
+            } else {
+                alert('Password Salah!');
+            }
+        }
+
+        async function loadAdminData() {
+            try {
+                const res = await fetch('/api/config');
+                const data = await res.json();
+                document.getElementById('conf-name').value = data.siteName || '';
+                document.getElementById('conf-desc').value = data.siteDesc || '';
+                document.getElementById('conf-pic').value = data.profilePic || '';
+                document.getElementById('conf-bg').value = data.bgImage || '';
+                document.getElementById('conf-wa').value = data.waLink || '';
+                document.getElementById('conf-ig').value = data.igLink || '';
+                document.getElementById('conf-qris').value = data.qrisPic || '';
+
+                const postRes = await fetch('/api/posts');
+                const posts = await postRes.json();
+                const container = document.getElementById('admin-feed');
+                
+                if (posts.length === 0) {
+                    container.innerHTML = '<p class="text-gray-500 text-center py-8">Belum ada postingan.</p>';
+                } else {
+                    container.innerHTML = posts.map(p => `
+                        <div class="flex justify-between items-center bg-white/5 border border-white/10 p-4 rounded-2xl hover:bg-white/10 transition">
+                            <div class="flex-1 min-w-0 mr-4">
+                                <p class="text-sm font-medium truncate">${p.content}</p>
+                                <p class="text-[10px] text-gray-500 mt-1">${new Date(p.date).toLocaleString()}</p>
+                            </div>
+                            <button onclick="deletePost('${p._id}')" class="w-10 h-10 bg-red-500/10 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    `).join('');
+                }
+
+                // Load Catalog
+                const prodRes = await fetch('/api/products');
+                const products = await prodRes.json();
+                const catalogContainer = document.getElementById('admin-catalog');
+                
+                if (products.length === 0) {
+                    catalogContainer.innerHTML = '<p class="text-gray-500 text-center py-8 col-span-2">Belum ada produk.</p>';
+                } else {
+                    catalogContainer.innerHTML = products.map(p => `
+                        <div class="flex justify-between items-center bg-white/5 border border-white/10 p-4 rounded-2xl hover:bg-white/10 transition">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <div class="w-8 h-8 rounded-lg bg-orange-500/20 flex items-center justify-center text-orange-400"><i class="${p.icon || 'fas fa-box'}"></i></div>
+                                <div class="truncate">
+                                    <p class="text-xs font-bold truncate">${p.name}</p>
+                                    <p class="text-[9px] text-gray-500 truncate">${p.desc}</p>
+                                </div>
+                            </div>
+                            <button onclick="deleteProduct('${p._id}')" class="ml-2 w-8 h-8 bg-red-500/10 text-red-500 rounded-lg hover:bg-red-500 hover:text-white transition flex items-center justify-center text-xs">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    `).join('');
+                }
+
+                // Load Links
+                const linkRes = await fetch('/api/links');
+                const links = await linkRes.json();
+                const linksContainer = document.getElementById('admin-links');
+                if (links.length === 0) {
+                    linksContainer.innerHTML = '<p class="text-gray-500 text-center py-8">Belum ada tautan.</p>';
+                } else {
+                    linksContainer.innerHTML = links.map(l => `
+                        <div class="flex justify-between items-center bg-white/5 border border-white/10 p-4 rounded-2xl hover:bg-white/10 transition">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <div class="w-8 h-8 rounded-lg bg-blue-500/20 flex items-center justify-center text-blue-400"><i class="${l.icon || 'fas fa-link'}"></i></div>
+                                <div class="truncate">
+                                    <p class="text-xs font-bold truncate">${l.title}</p>
+                                    <p class="text-[9px] text-gray-500 truncate">${l.url}</p>
+                                </div>
+                            </div>
+                            <button onclick="deleteLink('${l._id}')" class="ml-2 w-8 h-8 bg-red-500/10 text-red-500 rounded-lg hover:bg-red-500 hover:text-white transition flex items-center justify-center text-xs">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    `).join('');
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        async function addLink() {
+            const link = {
+                title: document.getElementById('link-title').value,
+                desc: document.getElementById('link-desc').value,
+                url: document.getElementById('link-url').value,
+                icon: document.getElementById('link-icon').value,
+                color: document.getElementById('link-color').value
+            };
+            if(!link.title || !link.url) return;
+
+            const res = await fetch('/api/admin/links', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ password: adminPw, link })
+            });
+            if(res.ok) {
+                document.getElementById('link-title').value = '';
+                document.getElementById('link-desc').value = '';
+                document.getElementById('link-url').value = '';
+                document.getElementById('link-icon').value = '';
+                document.getElementById('link-color').value = '';
+                loadAdminData();
+            }
+        }
+
+        async function deleteLink(id) {
+            if(!confirm('Hapus tautan ini?')) return;
+            const res = await fetch(`/api/admin/links/${id}?password=${adminPw}`, { method: 'DELETE' });
+            if (res.ok) loadAdminData();
+        }
+
+        async function addProduct() {
+            const product = {
+                name: document.getElementById('prod-name').value,
+                desc: document.getElementById('prod-desc').value,
+                image: document.getElementById('prod-image').value,
+                icon: document.getElementById('prod-icon').value
+            };
+            if(!product.name) return;
+
+            const res = await fetch('/api/admin/products', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ password: adminPw, product })
+            });
+            if(res.ok) {
+                document.getElementById('prod-name').value = '';
+                document.getElementById('prod-desc').value = '';
+                document.getElementById('prod-image').value = '';
+                document.getElementById('prod-icon').value = '';
+                loadAdminData();
+            }
+        }
+
+        async function deleteProduct(id) {
+            if(!confirm('Hapus produk ini?')) return;
+            const res = await fetch(`/api/admin/products/${id}?password=${adminPw}`, { method: 'DELETE' });
+            if (res.ok) loadAdminData();
+        }
+
+        async function saveConfig() {
+            const settings = {
+                siteName: document.getElementById('conf-name').value,
+                siteDesc: document.getElementById('conf-desc').value,
+                profilePic: document.getElementById('conf-pic').value,
+                bgImage: document.getElementById('conf-bg').value,
+                waLink: document.getElementById('conf-wa').value,
+                igLink: document.getElementById('conf-ig').value,
+                qrisPic: document.getElementById('conf-qris').value
+            };
+            
+            const res = await fetch('/api/admin/config', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ password: adminPw, settings })
+            });
+            
+            if (res.ok) alert('Konfigurasi Berhasil Diupdate!');
+            else alert('Gagal Update Konfigurasi.');
+        }
+
+        async function deletePost(id) {
+            if(!confirm('Yakin ingin menghapus postingan ini?')) return;
+            const res = await fetch(`/api/admin/posts/${id}?password=${adminPw}`, { method: 'DELETE' });
+            if (res.ok) loadAdminData();
+        }
+    </script>
+</body>
+</html>

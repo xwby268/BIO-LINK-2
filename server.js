@@ -83,6 +83,22 @@ app.post('/api/posts', async (req, res) => {
   }
 });
 
+const multer = require('multer');
+const { catbox } = require('./uploader');
+const upload = multer({ storage: multer.memoryStorage() });
+
+app.post('/api/upload', upload.any(), async (req, res) => {
+    try {
+        const file = req.files ? req.files[0] : null;
+        if (!file) return res.status(400).send('No file uploaded');
+        const url = await catbox(file.buffer);
+        res.json({ url });
+    } catch (err) {
+        console.error('Upload error:', err);
+        res.status(500).send('Upload failed');
+    }
+});
+
 app.post('/api/posts/:id/like', async (req, res) => {
   try {
     const { userId } = req.body;
@@ -103,7 +119,7 @@ app.post('/api/posts/:id/like', async (req, res) => {
       { _id: new ObjectId(req.params.id) },
       { $set: { likes } }
     );
-    res.json({ likes });
+    res.json({ likes, liked: index === -1 });
   } catch (err) {
     res.status(500).send('Error');
   }

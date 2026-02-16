@@ -101,10 +101,17 @@
             </div>
 
             <div class="grid grid-cols-1 gap-4">
-                <a href="faq" class="ios-widget p-4 rounded-2xl flex items-center justify-between">
+                <a href="/rules.html" class="ios-widget p-4 rounded-2xl flex items-center justify-between">
                     <div class="flex items-center gap-3">
                         <i class="fas fa-question-circle text-blue-400"></i>
-                        <span class="text-sm font-medium">FAQ / Pertanyaan</span>
+                        <span class="text-sm font-medium">Aturan Komunitas</span>
+                    </div>
+                    <i class="fas fa-chevron-right text-gray-600 text-xs"></i>
+                </a>
+                <a href="/uploader.html" class="ios-widget p-4 rounded-2xl flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-cloud-upload-alt text-purple-400"></i>
+                        <span class="text-sm font-medium">Uploader File</span>
                     </div>
                     <i class="fas fa-chevron-right text-gray-600 text-xs"></i>
                 </a>
@@ -158,7 +165,7 @@
                 <input type="text" id="postImageInput" placeholder="Tempel URL Gambar (https://...)" class="w-full bg-black/20 text-xs text-white p-2 rounded-lg mb-3 hidden border border-white/10">
                 
                 <div class="flex justify-between items-center border-t border-white/10 pt-3">
-                    <button onclick="toggleImageInput()" class="text-blue-400 text-xs flex items-center gap-1 hover:text-white transition"><i class="fas fa-image"></i> Tambah Foto</button>
+                    <button onclick="window.location.href='/uploader.html'" class="text-blue-400 text-xs flex items-center gap-1 hover:text-white transition"><i class="fas fa-image"></i> Tambah Foto</button>
                     <button onclick="addPost()" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold px-4 py-1.5 rounded-full transition ios-active">Posting</button>
                 </div>
             </div>
@@ -241,52 +248,97 @@
         </div>
     </div>
 
+    <!-- AUDIO PLAYER -->
+    <audio id="bgAudio" loop preload="auto">
+        <source src="https://github.com/xwby268/assets/blob/main/Starboy_playlist_Starboy_vibes_Starboy_song_playlist_vibes_2025_128k.mp3?raw=true" type="audio/mpeg">
+    </audio>
+    <button id="audioToggle" class="fixed top-6 right-6 z-[100] bg-white/10 backdrop-blur-xl p-3 rounded-full border border-white/20 text-white shadow-2xl transition-all duration-300">
+        <i id="audioIcon" class="fas fa-play"></i>
+    </button>
+
+    <style>
+        @keyframes pulse-play {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        .playing { animation: pulse-play 1.5s infinite; background: rgba(10, 132, 255, 0.2) !important; border-color: rgba(10, 132, 255, 0.4) !important; }
+    </style>
+
     <script>
-        // Custom Notification
+        const bgAudio = document.getElementById('bgAudio');
+        const audioToggle = document.getElementById('audioToggle');
+        const audioIcon = document.getElementById('audioIcon');
+        let isPlaying = false;
+
+        document.addEventListener('click', () => {
+            if (!isPlaying) {
+                bgAudio.play().then(() => {
+                    isPlaying = true;
+                    audioToggle.classList.add('playing');
+                    audioIcon.className = 'fas fa-pause';
+                }).catch(e => console.log("Auto-play blocked"));
+            }
+        }, { once: true });
+
+        // Auto-play attempt on load
+        window.addEventListener('load', () => {
+            bgAudio.play().then(() => {
+                isPlaying = true;
+                audioToggle.classList.add('playing');
+                audioIcon.className = 'fas fa-pause';
+            }).catch(e => console.log("Autoplay on load blocked by browser"));
+        });
+
+        audioToggle.onclick = (e) => {
+            e.stopPropagation();
+            if (bgAudio.paused) {
+                bgAudio.play();
+                isPlaying = true;
+                audioToggle.classList.add('playing');
+                audioIcon.className = 'fas fa-pause';
+            } else {
+                bgAudio.pause();
+                isPlaying = false;
+                audioToggle.classList.remove('playing');
+                audioIcon.className = 'fas fa-play';
+            }
+        };
+
         function showNotification(msg, type = 'success') {
             const notify = document.getElementById('customNotify');
             const msgEl = document.getElementById('notifyMsg');
+            if (!notify || !msgEl) return;
             msgEl.innerText = msg;
-            
             notify.classList.remove('opacity-0', '-translate-y-4');
             notify.classList.add('opacity-1', 'translate-y-0');
-            
             setTimeout(() => {
                 notify.classList.add('opacity-0', '-translate-y-4');
                 notify.classList.remove('opacity-1', 'translate-y-0');
             }, 2500);
         }
 
-        // Copy to Clipboard Overload
         function copyToClipboard(text) {
             navigator.clipboard.writeText(text).then(() => {
-                showNotification('Berhasil disalin ke papan klip!');
-            }).catch(err => {
-                console.error('Copy failed', err);
+                showNotification('Berhasil disalin!');
             });
         }
 
-        // Tab Navigation
         function switchView(viewId) {
             document.querySelectorAll('.view-section').forEach(s => s.style.display = 'none');
             document.querySelectorAll('.nav-icon').forEach(i => i.classList.remove('active'));
-            document.getElementById('view-' + viewId).style.display = 'block';
+            const target = document.getElementById('view-' + viewId);
+            if (target) target.style.display = 'block';
             event.currentTarget.classList.add('active');
         }
 
-        // Modal Controls
-        function openPaymentModal() {
-            document.getElementById('paymentModal').classList.add('active');
-        }
-        function closePaymentModal() {
-            document.getElementById('paymentModal').classList.remove('active');
-        }
+        function openPaymentModal() { document.getElementById('paymentModal').classList.add('active'); }
+        function closePaymentModal() { document.getElementById('paymentModal').classList.remove('active'); }
         window.onclick = function(event) {
             const modal = document.getElementById('paymentModal');
             if (event.target == modal) closePaymentModal();
         }
 
-        // Global Config
         async function loadConfig() {
             try {
                 const res = await fetch('/api/config');
@@ -300,17 +352,12 @@
                     document.getElementById('profile-pic').src = config.profilePic;
                     document.getElementById('user-avatar-post').src = config.profilePic;
                 }
-                if (config.waLink) document.getElementById('wa-link').href = config.waLink;
                 if (config.bgImage) document.getElementById('bg-layer').style.backgroundImage = `url('${config.bgImage}')`;
                 if (config.qrisPic) {
                     const qrisImg = document.querySelector('#payment-content img');
                     if (qrisImg) qrisImg.src = config.qrisPic;
                 }
-                
-                // Load Dynamic Links
                 loadDynamicLinks();
-
-                // Load Products
                 loadProducts();
             } catch (e) { console.error("Config load error", e); }
         }
@@ -320,28 +367,19 @@
                 const res = await fetch('/api/links');
                 const links = await res.json();
                 const container = document.getElementById('dynamic-links-container');
-                container.innerHTML = links.map(l => {
-                    const color = l.color || 'blue';
-                    const iconBg = l.color === 'purple' ? 'bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-600' : `bg-${color}-500`;
-                    const bgColor = `bg-${color}-600/20`;
-                    const borderColor = `border-${color}-500/30`;
-                    const textOpacityColor = `text-${color}-200`;
-
-                    return `
-                        <a href="${l.url}" target="_blank"
-                        class="ios-widget ios-active w-full p-4 rounded-3xl flex items-center justify-between bg-white/5 border-white/10 group shadow-lg shadow-black/20"
-                        style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1);">
-                            <div class="flex items-center gap-4">
-                                <div class="w-10 h-10 ${iconBg} rounded-full flex items-center justify-center text-white shadow-lg"><i class="${l.icon || 'fas fa-link'} text-xl"></i></div>
-                                <div class="text-left">
-                                    <h3 class="font-bold text-base text-white">${l.title}</h3>
-                                    <p class="text-xs text-white/60 opacity-90">${l.desc}</p>
-                                </div>
+                container.innerHTML = links.map(l => `
+                    <a href="${l.url}" target="_blank"
+                    class="ios-widget ios-active w-full p-4 rounded-3xl flex items-center justify-between bg-white/5 border-white/10 group shadow-lg shadow-black/20">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white shadow-lg"><i class="${l.icon || 'fas fa-link'} text-xl"></i></div>
+                            <div class="text-left">
+                                <h3 class="font-bold text-base text-white">${l.title}</h3>
+                                <p class="text-xs text-white/60 opacity-90">${l.desc}</p>
                             </div>
-                            <i class="fas fa-chevron-right text-white/30"></i>
-                        </a>
-                    `;
-                }).join('');
+                        </div>
+                        <i class="fas fa-chevron-right text-white/30"></i>
+                    </a>
+                `).join('');
             } catch (e) { console.error("Links load error", e); }
         }
 
@@ -352,204 +390,127 @@
                 const container = document.getElementById('shop-container');
                 container.innerHTML = products.map(p => {
                     let media = `<div class="aspect-square rounded-xl bg-white/5 flex items-center justify-center text-4xl text-blue-400"><i class="${p.icon || 'fas fa-box'}"></i></div>`;
-                    if (p.image) {
-                        media = `<img src="${p.image}" class="aspect-square w-full rounded-xl object-cover shadow-lg">`;
-                    }
+                    if (p.image) media = `<img src="${p.image}" class="aspect-square w-full rounded-xl object-cover shadow-lg">`;
+                    const orderUrl = p.orderUrl || 'https://wa.me/6287761601481';
                     return `
                         <div class="product-card ios-widget p-3 rounded-2xl flex flex-col gap-2 animate-fade-in">
                             ${media}
                             <div><h3 class="text-xs font-bold truncate">${p.name}</h3><p class="text-[10px] text-gray-400">${p.desc}</p></div>
-                            <button onclick="window.open(document.getElementById('wa-link')?.href || '#')" class="ios-active bg-white text-black text-[10px] font-bold py-2 rounded-lg text-center mt-1">Order</button>
+                            <button onclick="window.open('${orderUrl}')" class="ios-active bg-white text-black text-[10px] font-bold py-2 rounded-lg text-center mt-1">Order</button>
                         </div>
                     `;
                 }).join('');
             } catch (e) { console.error("Products load error", e); }
         }
 
-        // Community Feed
         async function loadPosts() {
             try {
                 const res = await fetch('/api/posts');
-                if (!res.ok) throw new Error('Failed to fetch posts');
                 const posts = await res.json();
-                console.log('Loaded posts count:', posts.length);
                 const container = document.getElementById('feed-container');
-                if (!container) {
-                    console.error("Feed container not found");
-                    return;
-                }
+                if (!container) return;
 
-                const currentUserId = 'user_' + Math.random().toString(36).substr(2, 9);
+                let userId = localStorage.getItem('userId');
+                if (!userId) {
+                    userId = 'user_' + Math.random().toString(36).substr(2, 9);
+                    localStorage.setItem('userId', userId);
+                }
                 
                 if (posts.length === 0) {
-                    container.innerHTML = '<div class="text-center py-10 text-gray-500 text-xs">Belum ada postingan. Jadilah yang pertama!</div>';
+                    container.innerHTML = '<div class="text-center py-10 text-gray-500 text-xs">Belum ada postingan.</div>';
                     return;
                 }
 
                 container.innerHTML = posts.map(p => {
-                    try {
-                        const likesCount = (p.likes || []).length;
-                        const commentsCount = (p.comments || []).length;
-                        const isLiked = (p.likes || []).includes(currentUserId);
-                        const shareUrl = `${window.location.origin}/share/sosial/${p._id}`;
-                        const postDate = p.date ? new Date(p.date).toLocaleString() : 'Baru saja';
+                    const likesCount = (p.likes || []).length;
+                    const commentsCount = (p.comments || []).length;
+                    const isLiked = Array.isArray(p.likes) && p.likes.includes(userId);
+                    const likeColor = isLiked ? 'text-red-500' : 'text-gray-400';
+                    let mediaHtml = '';
+                    if (p.image) mediaHtml = `<img src="${p.image}" class="w-full rounded-xl mb-3 border border-white/10 shadow-lg">`;
 
-                        return `
-                            <div class="ios-widget p-4 rounded-2xl animate-fade-in mb-4">
-                                <div class="flex items-center gap-3 mb-3">
-                                    <img src="${p.avatar || 'https://h.top4top.io/p_3697th1nd3.png'}" class="w-8 h-8 rounded-full object-cover">
-                                    <div>
-                                        <h4 class="text-xs font-bold">User</h4>
-                                        <p class="text-[9px] text-gray-500">${postDate}</p>
-                                    </div>
-                                </div>
-                                <p class="text-sm text-gray-200 mb-3">${p.content || ''}</p>
-                                ${p.image ? `<div class="mb-3 overflow-hidden rounded-xl border border-white/10 shadow-md bg-white/5"><img src="${p.image}" class="w-full h-auto block" onerror="this.parentElement.style.display='none'"></div>` : ''}
-                                
-                                <div class="flex items-center gap-6 border-t border-white/5 pt-3">
-                                    <button onclick="likePost('${p._id}', this)" class="flex items-center gap-1.5 text-xs ${isLiked ? 'text-red-500' : 'text-gray-400'} hover:text-red-500 transition">
-                                        <i class="${isLiked ? 'fas' : 'far'} fa-heart"></i> <span>${likesCount}</span>
-                                    </button>
-                                    <button onclick="toggleComments('${p._id}')" class="flex items-center gap-1.5 text-xs text-gray-400 hover:text-blue-400 transition">
-                                        <i class="far fa-comment"></i> <span>${commentsCount}</span>
-                                    </button>
-                                    <button onclick="sharePost('${shareUrl}')" class="flex items-center gap-1.5 text-xs text-gray-400 hover:text-green-400 transition">
-                                        <i class="far fa-share-square"></i> <span>Share</span>
-                                    </button>
-                                </div>
-
-                                <div id="comments-${p._id}" class="hidden mt-4 space-y-3 border-t border-white/5 pt-3">
-                                    <div id="comment-list-${p._id}" class="max-h-40 overflow-y-auto space-y-2 mb-3">
-                                        ${(p.comments || []).map(c => `
-                                            <div class="bg-white/5 p-2 rounded-xl">
-                                                <p class="text-[10px] font-bold text-blue-400 mb-0.5">User</p>
-                                                <p class="text-[11px] text-gray-200">${c.text || ''}</p>
-                                            </div>
-                                        `).join('')}
-                                    </div>
-                                    <div class="flex gap-2">
-                                        <input type="text" id="input-comment-${p._id}" placeholder="Tulis komentar..." class="flex-1 bg-black/30 text-[11px] p-2 rounded-full outline-none border border-white/10 focus:border-blue-500">
-                                        <button onclick="addComment('${p._id}')" class="bg-blue-600 text-white p-2 rounded-full w-8 h-8 flex items-center justify-center transition"><i class="fas fa-paper-plane text-[10px]"></i></button>
-                                    </div>
+                    return `
+                        <div class="ios-widget p-4 rounded-2xl animate-fade-in mb-4">
+                            <div class="flex items-center gap-3 mb-3">
+                                <img src="${p.avatar || 'https://h.top4top.io/p_3697th1nd3.png'}" class="w-8 h-8 rounded-full object-cover">
+                                <div><h4 class="text-xs font-bold">User</h4><p class="text-[9px] text-gray-500">${new Date(p.date).toLocaleString()}</p></div>
+                            </div>
+                            <p class="text-sm text-gray-200 mb-3">${p.content || ''}</p>
+                            ${mediaHtml}
+                            <div class="flex items-center gap-6 border-t border-white/5 pt-3">
+                                <button onclick="likePost('${p._id}')" class="flex items-center gap-1.5 ${likeColor} transition-colors">
+                                    <i class="fas fa-heart text-sm"></i>
+                                    <span class="text-[10px] font-bold">${likesCount}</span>
+                                </button>
+                                <div class="flex items-center gap-1.5 text-gray-400">
+                                    <i class="fas fa-comment text-sm"></i>
+                                    <span class="text-[10px] font-bold">${commentsCount}</span>
                                 </div>
                             </div>
-                        `;
-                    } catch (renderError) {
-                        console.error("Single post render error:", renderError, p);
-                        return '';
-                    }
+                        </div>
+                    `;
                 }).join('');
-            } catch (e) { 
-                console.error("Posts loop error", e);
-                const container = document.getElementById('feed-container');
-                if (container) container.innerHTML = '<div class="text-center py-10 text-red-400 text-xs">Gagal memuat postingan. Terjadi kesalahan sistem.</div>';
-            }
-
-        }
-
-        // Initialize
-        window.onload = () => {
-            loadConfig();
-            loadPosts();
-            setTimeout(() => {
-                document.getElementById('loader').style.opacity = '0';
-                setTimeout(() => document.getElementById('loader').style.display = 'none', 500);
-            }, 1000);
-        };
-
-        async function likePost(id, btn) {
-            try {
-                const res = await fetch(`/api/posts/${id}/like`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ userId: 'current_user' }) // simplified
-                });
-                if (res.ok) loadPosts();
-            } catch (e) {}
-        }
-
-        async function addComment(postId) {
-            const input = document.getElementById(`input-comment-${postId}`);
-            const text = input.value;
-            if (!text) return;
-
-            try {
-                const res = await fetch(`/api/posts/${postId}/comment`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ text, user: 'User' })
-                });
-                if (res.ok) {
-                    input.value = '';
-                    loadPosts();
-                }
-            } catch (e) {}
-        }
-
-        function toggleComments(id) {
-            const div = document.getElementById(`comments-${id}`);
-            div.classList.toggle('hidden');
-        }
-
-        function sharePost(url) {
-            if (navigator.share) {
-                navigator.share({ title: 'Baeci Store Community', url }).catch(() => copyToClipboard(url));
-            } else {
-                copyToClipboard(url);
-            }
+            } catch (e) { console.error("Posts load error", e); }
         }
 
         async function addPost() {
             const content = document.getElementById('postInput').value;
             const image = document.getElementById('postImageInput').value;
-            if (!content) {
-                alert('Tulis sesuatu dulu sayang!');
-                return;
-            }
-
+            if (!content && !image) return;
             try {
                 const res = await fetch('/api/posts', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        content, 
-                        image, 
-                        avatar: document.getElementById('profile-pic').src 
-                    })
+                    body: JSON.stringify({ content, image, avatar: document.getElementById('profile-pic').src })
                 });
-
                 if (res.ok) {
                     document.getElementById('postInput').value = '';
                     document.getElementById('postImageInput').value = '';
                     document.getElementById('postImageInput').classList.add('hidden');
                     loadPosts();
-                } else {
-                    const errText = await res.text();
-                    alert('Gagal posting: ' + errText);
+                    showNotification('Postingan berhasil!');
                 }
-            } catch (e) {
-                console.error("Post error", e);
-                alert('Koneksi bermasalah, coba lagi ya!');
+            } catch (e) { console.error(e); }
+        }
+
+        async function likePost(postId) {
+            const userId = localStorage.getItem('userId');
+            try {
+                const res = await fetch(`/api/posts/${postId}/like`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId })
+                });
+                const data = await res.json();
+                loadPosts();
+                showNotification(data.liked ? 'Menyukai!' : 'Batal menyukai');
+            } catch (e) { console.error(e); }
+        }
+
+        function toggleImageInput() { document.getElementById('postImageInput').classList.toggle('hidden'); }
+
+        function addRulesLink() {
+            const homeView = document.getElementById('view-home');
+            if (homeView) {
+                const grid = homeView.querySelector('.grid');
+                if (grid && !document.getElementById('rules-link')) {
+                    const rulesLink = document.createElement('a');
+                    rulesLink.id = 'rules-link';
+                    rulesLink.href = 'rules';
+                    rulesLink.className = 'ios-widget p-4 rounded-2xl flex items-center justify-between mt-4';
+                    rulesLink.innerHTML = `
+                        <div class="flex items-center gap-3"><i class="fas fa-file-contract text-yellow-400"></i><span class="text-sm font-medium">Panduan & Peraturan</span></div>
+                        <i class="fas fa-chevron-right text-gray-600 text-xs"></i>
+                    `;
+                    grid.appendChild(rulesLink);
+                }
             }
-        }
-
-        function toggleImageInput() {
-            const input = document.getElementById('postImageInput');
-            input.classList.toggle('hidden');
-        }
-
-        function openPaymentModal() { document.getElementById('paymentModal').style.display = 'flex'; }
-        function closePaymentModal() { document.getElementById('paymentModal').style.display = 'none'; }
-
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                alert('Copied: ' + text);
-            });
         }
 
         window.onload = () => {
             loadConfig();
             loadPosts();
+            addRulesLink();
             setTimeout(() => {
                 document.getElementById('loader').style.opacity = '0';
                 setTimeout(() => document.getElementById('loader').style.display = 'none', 500);
